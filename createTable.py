@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS Data_Analytics (
 ''')
 
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS Database_Managment (
+CREATE TABLE IF NOT EXISTS Database_Management (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     question TEXT,
     answer TEXT
