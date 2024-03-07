@@ -1,4 +1,3 @@
-import random
 import sqlite3
 
 # ANSI escape codes for colored output
@@ -13,56 +12,55 @@ def get_table_names(cursor):
 
 def choose_category(cursor):
     available_tables = get_table_names(cursor)
+    
+    if not available_tables:
+        print("No available tables.")
+        return None
+    
     print("Available Tables:")
     for idx, table in enumerate(available_tables, start=1):
         print(f"{idx}. {table}")
 
-    table_index = int(input("Select a table (enter the corresponding number): ")) - 1
-    return available_tables[table_index]
+    try:
+        table_index = int(input("Select a table (enter the corresponding number): ")) - 1
+        return available_tables[table_index]
+    except (ValueError, IndexError):
+        print("Invalid input. Please enter a valid number.")
+        return None
 
 def fetch_all_questions(cursor, category):
-    cursor.execute(f'SELECT * FROM {category};')
+    cursor.execute(f'SELECT * FROM {category} LIMIT 10;')  # Limit to 10 questions
     return cursor.fetchall()
 
-def display_question(questions, asked_questions):
-    remaining_questions = [q for q in questions if q not in asked_questions]
-    if not remaining_questions:
-        return None  # All questions asked
+def display_question(questions):
+    for question in questions:
+        print(f"Question: {question[1]}")
+        user_answer = input("Your Answer: ").lower()
 
-    question = random.choice(remaining_questions)
-    asked_questions.append(question)
-    return question
+        if user_answer == question[2].lower():
+            print(GREEN + "Correct! Well done." + RESET)
+        else:
+            print(RED + f"Sorry, the correct answer is: {question[2]}" + RESET)
+
+def play_again():
+    play_again_input = input("Do you want to play again? (yes/no): ").lower()
+    return play_again_input == "yes"
 
 def main():
-    play_again = True
-
-    while play_again:
+    while True:
         with sqlite3.connect('QuizBowl.db') as conn:
             cursor = conn.cursor()
 
             category = choose_category(cursor)
-            print(f"Category: {category}")
 
-            all_questions = fetch_all_questions(cursor, category)
-            asked_questions = []
+            if category is not None:
+                print(f"Category: {category}")
 
-            while True:
-                question = display_question(all_questions, asked_questions)
+                all_questions = fetch_all_questions(cursor, category)
+                display_question(all_questions)
 
-                if question is None:
-                    print("All questions from this category have been asked.")
-                    break
-
-                print(f"Question: {question[1]}")
-                user_answer = input("Your Answer: ").lower()
-
-                if user_answer == question[2].lower():
-                    print(GREEN + "Correct! Well done." + RESET)
-                else:
-                    print(RED + f"Sorry, the correct answer is: {question[2]}" + RESET)
-
-            play_again_input = input("Do you want to play again? (yes/no): ").lower()
-            play_again = play_again_input == "yes"
+        if not play_again():
+            break
 
 if __name__ == "__main__":
     main()
