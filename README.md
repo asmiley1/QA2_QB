@@ -17,9 +17,9 @@ Welcome to the Quiz Bowl application! This project aims to create an engaging qu
 
 ## Files in the Repository
 
-### 1. Create File (`create.py`)
-
-This file serves two purposes: creating new tables and adding data to those tables. It is intended to be used as a one-time setup to populate the database with questions and answers.
+### 1. Create File (`createQuestions/Table.py`)
+- The Questions file allows you to populate whatever table within the database with new information in a (Question,Awnser) format.
+-The Table file allows the user to create a new table to add to the database file.
 
 #### Creating a New Table:
 - Run the script to create a new table. Adjust the script to add tables as needed.
@@ -44,6 +44,7 @@ This is the main application file where users can play the Quiz Bowl. When gradi
 #### Running the Application:
 - Execute `app.py` to start the Quiz Bowl application.
 - Select a category, answer questions, and enjoy the quiz experience.
+- Once done with the initial round of questions, you will be able to play again when prompted.
 
 ### 4. README.md
 
